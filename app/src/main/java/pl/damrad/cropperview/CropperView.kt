@@ -2,15 +2,20 @@ package pl.damrad.cropperview
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.content.res.Resources
+import android.graphics.*
 import android.util.AttributeSet
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.MotionEvent
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.graphics.drawable.toBitmap
 
 class CropperView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
     init {
@@ -23,6 +28,8 @@ class CropperView @JvmOverloads constructor(
         style = Paint.Style.STROKE
         strokeWidth = 8f
     }
+
+    var preview: ImageView? = null
 
     private var cutHeight: Float = 220f
     private var left: Float = 16f
@@ -43,6 +50,24 @@ class CropperView @JvmOverloads constructor(
             top = height - cutHeight
         }
 
+        val draw = super.getDrawable()
+        draw?.let { drawable ->
+            height.let {
+                width.let { it1 ->
+                    drawable.toBitmap(it1, it).also { bitmap ->
+                        val crop =
+                            Bitmap.createBitmap(
+                                bitmap,
+                                0,
+                                top.toInt(),
+                                bitmap.width,
+                                cutHeight.toInt()
+                            )
+                        preview?.setImageBitmap(crop)
+                    }
+                }
+            }
+        }
         canvas?.drawRect(left, top, width - right, bottom + cutHeight, paint)
     }
 
