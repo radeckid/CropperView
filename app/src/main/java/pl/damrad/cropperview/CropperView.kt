@@ -1,6 +1,5 @@
 package pl.damrad.cropperview
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -67,7 +66,6 @@ class CropperView @JvmOverloads constructor(
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action?.and(MotionEvent.ACTION_MASK)) {
             MotionEvent.ACTION_DOWN -> {
