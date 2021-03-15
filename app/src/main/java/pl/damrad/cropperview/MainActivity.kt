@@ -2,6 +2,7 @@ package pl.damrad.cropperview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 
 class MainActivity : AppCompatActivity() {
@@ -9,9 +10,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val mainImageView = findViewById<CropperView>(R.id.cropperView)
-        val preview = findViewById<ImageView>(R.id.previewImage)
+        val cropperView = findViewById<CropperView>(R.id.cropperView)
 
-        mainImageView.preview = preview
+        findViewById<Button>(R.id.previewBtn).setOnClickListener {
+            val stripe = cropperView.getStripeBitmap()
+            stripe?.let { bitmap -> cropperView.setPreview(bitmap) }
+        }
+
     }
 }

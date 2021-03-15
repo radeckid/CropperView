@@ -13,6 +13,7 @@
         android:layout_margin="8dp"
         android:adjustViewBounds="true"
         android:src="@drawable/cat"
+        app:preview_id="@id/previewImage"
         app:layout_constraintBottom_toTopOf="@id/previewImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,11 +22,21 @@
     <ImageView
         android:id="@+id/previewImage"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/previewBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cropperView" />
+        tools:src="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/previewBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="preview"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,14 +2,15 @@ package pl.damrad.cropperview
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.MotionEvent
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.drawable.toBitmap
 
 class CropperView @JvmOverloads constructor(
@@ -21,6 +22,10 @@ class CropperView @JvmOverloads constructor(
     init {
         isFocusable = true
         isClickable = true
+
+        context.withStyledAttributes(attrs, R.styleable.CropperView) {
+            previewId = getResourceId(R.styleable.CropperView_preview_id, 0)
+        }
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -29,6 +34,7 @@ class CropperView @JvmOverloads constructor(
         strokeWidth = 8f
     }
 
+    private var previewId: Int = 0
     var preview: ImageView? = null
 
     private var cutHeight: Float = 220f
@@ -38,6 +44,13 @@ class CropperView @JvmOverloads constructor(
     private var bottom: Float = 30f
 
     private val offset: Float = 110f
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (previewId != 0) {
+            preview = rootView.findViewById(previewId)
+        }
+    }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -50,26 +63,9 @@ class CropperView @JvmOverloads constructor(
             top = height - cutHeight
         }
 
-        val draw = super.getDrawable()
-        draw?.let { drawable ->
-            height.let {
-                width.let { it1 ->
-                    drawable.toBitmap(it1, it).also { bitmap ->
-                        val crop =
-                            Bitmap.createBitmap(
-                                bitmap,
-                                0,
-                                top.toInt(),
-                                bitmap.width,
-                                cutHeight.toInt()
-                            )
-                        preview?.setImageBitmap(crop)
-                    }
-                }
-            }
-        }
         canvas?.drawRect(left, top, width - right, bottom + cutHeight, paint)
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -85,5 +81,31 @@ class CropperView @JvmOverloads constructor(
         }
         invalidate()
         return true
+    }
+
+    fun getStripeBitmap(): Bitmap? {
+        val draw = super.getDrawable()
+        draw?.let { drawable ->
+            height.let {
+                width.let { it1 ->
+                    drawable.toBitmap(it1, it).also { bitmap ->
+                        val crop =
+                            Bitmap.createBitmap(
+                                bitmap,
+                                0,
+                                top.toInt(),
+                                bitmap.width,
+                                cutHeight.toInt()
+                            )
+                        return crop
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    fun setPreview(bitmap: Bitmap) {
+        preview?.setImageBitmap(bitmap)
     }
 }
