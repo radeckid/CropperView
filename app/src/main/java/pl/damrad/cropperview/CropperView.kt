@@ -86,18 +86,16 @@ class CropperView @JvmOverloads constructor(
     fun getStripeBitmap(): Bitmap? {
         val draw = super.getDrawable()
         draw?.let { drawable ->
-            height.let {
-                width.let { it1 ->
-                    drawable.toBitmap(it1, it).also { bitmap ->
-                        val crop =
-                            Bitmap.createBitmap(
-                                bitmap,
-                                0,
-                                top.toInt(),
-                                bitmap.width,
-                                cutHeight.toInt()
-                            )
-                        return crop
+            height.let {drawHeight ->
+                width.let { drawWidth ->
+                    drawable.toBitmap(drawWidth, drawHeight).also { bitmap ->
+                        return Bitmap.createBitmap(
+                            bitmap,
+                            0,
+                            top.toInt(),
+                            bitmap.width,
+                            cutHeight.toInt()
+                        )
                     }
                 }
             }
@@ -105,7 +103,9 @@ class CropperView @JvmOverloads constructor(
         return null
     }
 
-    fun setPreview(bitmap: Bitmap) {
-        preview?.setImageBitmap(bitmap)
+    fun setPreview(bitmap: Bitmap, previewImageView: ImageView? = null) {
+        previewImageView?.setImageBitmap(bitmap) ?: run {
+            preview?.setImageBitmap(bitmap)
+        }
     }
 }
